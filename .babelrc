@@ -1,0 +1,17 @@
+{
+	"presets": [
+		["es2015", {
+			"loose": true,
+			"modules": false
+		}],
+		"preact-widget-scripts/babel"
+	],
+	"plugins": [
+		["transform-runtime", {
+			"helpers": false,
+			"polyfill": false,
+			"regenerator": true,
+			"moduleName": "babel-runtime"
+		}]
+	]
+}
