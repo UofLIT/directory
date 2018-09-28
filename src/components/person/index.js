@@ -1,4 +1,5 @@
 import { h, Component } from "preact";
+import PlaceholderImage from "../PlaceholderImage";
 import style from "./style.scss";
 
 export default class Person extends Component {
@@ -18,16 +19,15 @@ export default class Person extends Component {
 	};
 
 	render({name, href}, {details: {Image, Contact, ...others}}) {
-		let imageElm = (Image && Image.attributes.element.naturalWidth) || <img class="img-polaroid" src="blank-portrait.png" />
+		let imageElm = Image || <PlaceholderImage/>
 		let detailsElm = Object.keys(others).map(heading => (
 			<div>
 				<h4 class={heading.replace(/\W/g, '')}>{heading}</h4>
 				<div dangerouslySetInnerHTML={{ __html: others[heading].outerHTML }} />
 			</div>
 		));
-		console.log(Image && Image.attributes.element.naturalWidth);
 		return (
-			<div class={"span6 " + style.person}>
+			<div class={style.person}>
 				<a href={href}><h3>{name}</h3></a>
 				{imageElm}
 				{Contact}

@@ -7,16 +7,18 @@ export default class Tag extends Component {
 		super(props);
 	}
 
-	render({title, people, headingsToLoad}) {
+	render({title, people, cols = 2}) {
 		let titleElm = title ? <h2>{title}</h2> : null;
 		let rows = [];
 		let hrefs = Object.keys(people);
 		
-		for (let i = 0; i < hrefs.length; i += 2) {
+		for (let i = 0; i < hrefs.length; i += cols) {
 			rows.push(
 				<div class="row-fluid">
-					{hrefs.slice(i, i + 2).map(href => (
-						<Person name={people[href].name} href={href} infoPromise={people[href].promise} />
+					{hrefs.slice(i, i + cols).map(href => (
+						<div class={`span${12/cols}`}>
+							<Person name={people[href].name} href={href} infoPromise={people[href].promise} />
+						</div>
 					))}
 				</div>
 			);

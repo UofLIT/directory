@@ -2,14 +2,13 @@ import { h, Component } from "preact";
 import arrayFrom from "array-from";
 import HTMLWrapper from "../HTMLWrapper";
 import Tag from "../tag";
-import Person from "../person";
+import Image from "../image";
 import style from "./style.scss";
 
 export default class Directory extends Component {
 	constructor(props) {
 		super(props);
 		this.people = {};
-		this.peopleInfoCache = {};
 		this.toLoad = props.load;
 		this.pageType = props.pageType;
 		this.parser = new DOMParser();
@@ -37,63 +36,62 @@ export default class Directory extends Component {
 		if (!response.ok) {
 			return;
 		}
-		else {
-			const doc = this.parser.parseFromString(await response.text(), "text/html");
-			const contextNode = this.pageType === 'bio-page' ? doc.getElementById('bio') : doc.body;
+		const doc = this.parser.parseFromString(await response.text(), "text/html");
+		const contextNode = this.pageType === 'bio-page' ? doc.getElementById('bio') : doc.body;
 
-			// const seachFrom = this.pageType == 'bio-page' ? null : doc;
-			return this.toLoad.reduce((details, entry) => {
-				let heading, element;
-				switch (typeof entry) {
-					case 'string':
-						heading = entry;
-						switch (heading) {
-							case 'Image':
-								element = <HTMLWrapper element={doc.querySelector('img')} class="img-polaroid"/>;
+		// const seachFrom = this.pageType == 'bio-page' ? null : doc;
+		return this.toLoad.reduce((details, entry) => {
+			let heading, element;
+			switch (typeof entry) {
+				case 'string':
+					heading = entry;
+					switch (heading) {
+						case 'Image':
+							const img = doc.querySelector('img');
+							element = img ? <Image img={img} /> : null;
+							break;
+						case 'Contact':
+							if('bio-page' === this.pageType) {
+								const title = doc.querySelector('#bio-contact h2');
+								const titleElm = title ? <em>{title.textContent}</em> : null;
+								//let department = doc.querySelector('#bio-contact h3');
+								const contact = doc.querySelector('#bio-contact ul');
+								const contactElm = contact ? <HTMLWrapper element={contact}/> : null;
+								element = (
+									<div>
+										{titleElm}
+										{contactElm}
+									</div>
+								);
 								break;
-							case 'Contact':
-								if('bio-page' === this.pageType) {
-									const title = doc.querySelector('#bio-contact h2');
-									const titleElm = title ? <em>{title.textContent}</em> : null;
-									//let department = doc.querySelector('#bio-contact h3');
-									const contact = doc.querySelector('#bio-contact ul');
-									const contactElm = contact ? <HTMLWrapper element={contact}/> : null;
-									element = (
-										<div>
-											{titleElm}
-											{contactElm}
-										</div>
-									);
-									break;
-								}
-							default:
-								element = <HTMLWrapper element={doc.evaluate(`//*[contains(text(),'${heading}')][1]/following-sibling::*[1]`, contextNode, null, XPathResult.ANY_TYPE, null).iterateNext()}/>;
-						}
-						break;
-					case 'object':
-						heading = Object.keys(entry)[0];
-						if (entry[heading].css) {
-							// split and loop so first selector is preferred
-							for (let css of entry[heading].css.split(', ')) {
-								let elem;
-								if (elem = doc.querySelector(css)) {
-									element = <HTMLWrapper element={elem}/>
-									break;
-								}
+							}
+						default:
+							element = <HTMLWrapper element={doc.evaluate(`//*[contains(text(),'${heading}')][1]/following-sibling::*[1]`, contextNode, null, XPathResult.ANY_TYPE, null).iterateNext()}/>;
+					}
+					break;
+				case 'object':
+					heading = Object.keys(entry)[0];
+					if (entry[heading].css) {
+						// split and loop so first selector is preferred
+						for (let css of entry[heading].css.split(', ')) {
+							let elem;
+							if (elem = doc.querySelector(css)) {
+								element = <HTMLWrapper element={elem}/>
+								break;
 							}
 						}
-						if (!element && entry[heading].xpath) {
-							element = <HTMLWrapper element={doc.evaluate(entry[heading].xpath, contextNode, null, XPathResult.ANY_TYPE, null).iterateNext()}/>;
-						}
-						break;
-				}
-				if (element)
-					details[heading] = element;
-				else
-					console.warn(`no ${heading} found for ${href}`);
-				return details;
-			}, {});
-		}
+					}
+					if (!element && entry[heading].xpath) {
+						element = <HTMLWrapper element={doc.evaluate(entry[heading].xpath, contextNode, null, XPathResult.ANY_TYPE, null).iterateNext()}/>;
+					}
+					break;
+			}
+			if (element)
+				details[heading] = element;
+			else
+				console.warn(`no ${heading} found for ${href}`);
+			return details;
+		}, {});
 	};
 
 	componentWillMount = () => {
@@ -112,11 +110,11 @@ export default class Directory extends Component {
 		}
 	};
 
-	render(props) {
+	render = ({cols}) => {
 		let tags = [];
 		for (let tag in this.people) {
 			tags.push(
-				<Tag title={tag} people={this.people[tag]} peopleInfoCache={this.peopleInfoCache} />
+				<Tag title={tag} people={this.people[tag]} cols={cols} />
 			);
 		}
 		return <div id={style.directory}>{tags}</div>;

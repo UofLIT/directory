@@ -7,10 +7,11 @@ export default class HTMLWrapper extends Component {
 		let attributes = arrayFrom(element.attributes).reduce(
 			(obj, attr) => {
 				// override with passed values
-				obj[attr.nodeName] = props[attr.nodeName] || attr.nodeValue;
+				if (!obj[attr.name])
+					obj[attr.name] = attr.value;
 				return obj;
 			},
-			{ dangerouslySetInnerHTML: { __html: element.innerHTML } }
+			{ ...props, dangerouslySetInnerHTML: { __html: element.innerHTML } }
 		);
 		return h(element.tagName, attributes, children);
 	}
