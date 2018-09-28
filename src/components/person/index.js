@@ -17,18 +17,20 @@ export default class Person extends Component {
 		}
 	};
 
-	render({name, href}, {details: {Image, ...others}}) {
-		let imageElm = Image ? <img class="img-polaroid" src={Image.src} alt={Image.alt} /> : <img class="img-polaroid" src="blank-portrait.png" />
+	render({name, href}, {details: {Image, Contact, ...others}}) {
+		let imageElm = (Image && Image.attributes.element.naturalWidth) || <img class="img-polaroid" src="blank-portrait.png" />
 		let detailsElm = Object.keys(others).map(heading => (
 			<div>
 				<h4 class={heading.replace(/\W/g, '')}>{heading}</h4>
 				<div dangerouslySetInnerHTML={{ __html: others[heading].outerHTML }} />
 			</div>
 		));
+		console.log(Image && Image.attributes.element.naturalWidth);
 		return (
 			<div class={"span6 " + style.person}>
 				<a href={href}><h3>{name}</h3></a>
 				{imageElm}
+				{Contact}
 				{detailsElm}
 			</div>
 		);
