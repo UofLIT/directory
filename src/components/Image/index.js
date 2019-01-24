@@ -3,6 +3,15 @@ import HTMLWrapper from "../HTMLWrapper";
 import PlaceholderImage from "../PlaceholderImage";
 
 export default class Image extends Component {
+	/**
+	 * @typedef ImageProps
+	 * @type {Object}
+	 * @property {Image} img
+	 */
+
+	/**
+	 * @param {ImageProps} props 
+	 */
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -16,6 +25,9 @@ export default class Image extends Component {
 		});
 	};
 
+	/**
+	 * @param {ImageProps} props 
+	 */
 	render = ({ img }) => (
 		<div>
 			<HTMLWrapper

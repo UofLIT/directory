@@ -7,6 +7,14 @@ export default class Tag extends Component {
 		super(props);
 	}
 
+	/**
+	 * 
+	 * @param {Object} props
+	 * @param {string} props.title
+	 * @param {Object.<string, {name: string, promise: Promise}>} props.people
+	 * @param {number} [props.cols = 2]
+	 * @returns {JSX.Element}
+	 */
 	render({title, people, cols = 2}) {
 		let titleElm = title ? <h2>{title}</h2> : null;
 		let rows = [];
