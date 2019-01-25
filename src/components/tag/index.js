@@ -1,6 +1,6 @@
 import { h, Component } from "preact";
 import Person from "../person";
-//import "./style.scss";
+import style from "./style.scss";
 
 export default class Tag extends Component {
 	constructor(props) {
@@ -24,7 +24,7 @@ export default class Tag extends Component {
 			rows.push(
 				<div class="row-fluid">
 					{hrefs.slice(i, i + cols).map(href => (
-						<div class={`span${12/cols}`}>
+						<div class={`span${12/cols} ${style.col}`}>
 							<Person name={people[href].name} href={href} infoPromise={people[href].promise} />
 						</div>
 					))}

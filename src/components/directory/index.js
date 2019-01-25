@@ -16,8 +16,7 @@ export default class Directory extends Component {
 	 */
 	constructor(props) {
 		super(props);
-		/** @type {Object.<string, Object.<string, {name: string, promise: Promise}>>} */
-		this.people = {};
+		this.peopleStore = new Map();
 		this.toLoad = props.load;
 		this.pageType = props.pageType;
 		this.parser = new DOMParser();
@@ -146,10 +145,10 @@ export default class Directory extends Component {
 			// tags column may not exist
 			const tagsText = !row.cells[1] ? '' : row.cells[1].textContent;
 			for (const tag of tagsText.split(', ')) {
-				if (!this.people[tag]) {
-					this.people[tag] = [];
+				if (!this.peopleStore.has(tag)) {
+					this.peopleStore.set(tag, []);
 				}
-				this.people[tag][href] = { name, promise };
+				this.peopleStore.get(tag)[href] = { name, promise };
 			}
 		}
 	}
@@ -160,13 +159,14 @@ export default class Directory extends Component {
 	 * @param {number} props.cols
 	 * @returns {JSX.Element}
 	 */
-
 	render({ cols }) {
+		const tags = [];
+		for (const [tag, people] of this.peopleStore) {
+			tags.push(<Tag key={tag} title={tag} people={people} cols={cols} />);
+		}
 		return (
 			<div class="hsc-directory" id={style.directory}>
-				{Object.keys(this.people).map(tag =>
-					<Tag key={tag} title={tag} people={this.people[tag]} cols={cols} />
-				)}
+				{tags}
 			</div>
 		);
 	}

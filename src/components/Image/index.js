@@ -28,16 +28,16 @@ export default class Image extends Component {
 	/**
 	 * @param {ImageProps} props 
 	 */
-	render = ({ img }) => (
-		<div>
-			<HTMLWrapper
-				element={img}
-				class="img-polaroid"
-				onLoad={this.handleLoad}
-				style={!this.state.loaded ? { visibility: 'hidden', position: 'absolute' } : {}} />
-			{!this.state.loaded ?
-				<PlaceholderImage/> :
-				null}
-		</div>
-	);
+	render({ img }) {
+		return (
+			<div>
+				<HTMLWrapper
+					element={img}
+					class="img-polaroid"
+					onLoad={this.handleLoad}
+					style={!this.state.loaded ? { visibility: 'hidden', position: 'absolute' } : {}} />
+				{!this.state.loaded ? <PlaceholderImage /> : null}
+			</div>
+		);
+	}
 }

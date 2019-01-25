@@ -20,9 +20,11 @@ export default class Person extends Component {
 
 	render({ name, href }, { details: { Image, Title, Contact, ...others } }) {
 		return (
-			<div class={style.person}>
-				<a href={href}><h3>{name}</h3></a>
-				{Image || <PlaceholderImage/>}
+			<div class={'person ' + style.person}>
+				<a href={href}>
+					{Image || <PlaceholderImage/>}
+					<h3>{name}</h3>
+				</a>
 				{Title ? <em>{Title}</em> : null}
 				{Contact}
 				{Object.keys(others).map(heading =>
