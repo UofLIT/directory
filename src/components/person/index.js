@@ -11,25 +11,37 @@ export default class Person extends Component {
 		};
 	}
 
-	componentDidMount = async () => {
+	async componentDidMount() {
 		let details = await this.infoPromise;
 		if (details) {
 			this.setState({ details });
 		}
-	};
+	}
 
-	render({ name, href }, { details: { Image, Title, Contact, ...others } }) {
+	/**
+	 * change text to a class name
+	 * @param {string} text
+	 */
+	textToClass(text) {
+		return text.trim().toLowerCase().replace(/\W+/g, '-')
+	}
+
+	render({ name, href }, { details: { Image, Title, Department, Contact, ...others } }) {
 		return (
 			<div class={'person ' + style.person}>
 				<a href={href}>
-					{Image || <PlaceholderImage/>}
+					{Image || <PlaceholderImage />}
 					<h3>{name}</h3>
 				</a>
-				{Title ? <em>{Title}</em> : null}
+				{Title || Department ?
+					<p>
+						{Title ? <em>{Title}</em> : null}
+						{Department}
+					</p> : null}
 				{Contact}
 				{Object.keys(others).map(heading =>
 					<div>
-						<h4 class={heading.trim().toLowerCase().replace(/\W+/g, '-')}>{heading}</h4>
+						<h4 class={textToClass(heading)}>{heading}</h4>
 						{others[heading]}
 					</div>
 				)}

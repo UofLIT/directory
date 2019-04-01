@@ -6,10 +6,11 @@ export default class HTMLWrapper extends Component {
 	 * 
 	 * @param {Object} props
 	 * @param {HTMLElement} props.element
+	 * @param {string=} props.tagName - tag name to replace root tag with
 	 * @param {preact.ComponentChildren[]} props.children
 	 * @returns {JSX.Element}
 	 */
-	render({element, children, ...props}) {
+	render({element, tagName, children, ...props}) {
 		// turn element attributes into a plain object
 		const attributes = arrayFrom(element.attributes).reduce(
 			(obj, attr) => {
@@ -20,6 +21,6 @@ export default class HTMLWrapper extends Component {
 			},
 			{ ...props, dangerouslySetInnerHTML: { __html: element.innerHTML } }
 		);
-		return h(element.tagName, attributes, children);
+		return h(tagName || element.tagName, attributes, children);
 	}
 }

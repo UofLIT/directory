@@ -69,7 +69,13 @@ export default class Directory extends Component {
 						case 'Title':
 							if ('bio-page' === this.pageType) {
 								const title = doc.querySelector('#bio-contact h2');
-								element = title ? title.textContent : null;
+								element = title ? <HTMLWrapper tagName="div" element={title} /> : null;
+								break;
+							}
+						case 'Department':
+							if ('bio-page' === this.pageType) {
+								const department = doc.querySelector('#bio-contact h3');
+								element = department ? <HTMLWrapper tagName="div" element={department} /> : null;
 								break;
 							}
 						case 'Contact':
@@ -135,8 +141,8 @@ export default class Directory extends Component {
 			let promise;
 			if (type === 'image') {
 				const image = document.createElement('img');
-				// remove '/view'
-				image.src = href.slice(0, -4);
+				// replace '/view' with '/image_preview'
+				image.src = href.slice(0, -4) + 'image_preview';
 				promise = { Image: <Image img={image} /> };
 			}
 			else {
